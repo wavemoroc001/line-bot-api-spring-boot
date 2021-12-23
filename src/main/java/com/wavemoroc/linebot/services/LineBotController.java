@@ -81,19 +81,22 @@ public class LineBotController {
                                 }
                                 List<ItemOrder> itemOrderList = orderRepository.findByOwner(userId);
                                 List<Message> textMessageList = new ArrayList<>();
+                                reply(replyToken, new TextMessage("OrderID : " + itemOrderList.get(0).getId() + "\n" +
+                                        itemOrderList.get(0).getItemList().get(0).getName() + "\t" + itemOrderList.get(0).getItemList().get(0).getPrice()));
 
-                                for (ItemOrder itemOrder : itemOrderList) {
+//                                for (ItemOrder itemOrder : itemOrderList) {
 //                                    StringBuilder builder = new StringBuilder();
 //                                    builder.append("OrderID :" + itemOrder.getId());
 //                                    builder.append("------------------------------\n");
 
-                                    for (Item item : itemOrder.getItemList()) {
-//                                        builder.append(item.getName() + "\t" + item.getPrice() + "\n");
-                                        reply(replyToken, new TextMessage(item.getName() + "\t" + item.getPrice()));
 
-                                    }
+//                                    for (Item item : itemOrder.getItemList()) {
+//                                        builder.append(item.getName() + "\t" + item.getPrice() + "\n");
+//                                        reply(replyToken, new TextMessage(item.getName() + "\t" + item.getPrice()));
+
+//                                    }
 //                                    textMessageList.add(new TextMessage(builder.toString()));
-                                }
+//                                }
 //                                reply(replyToken, new TextMessage("Size : "+textMessageList.size()));
 //                                reply(replyToken, textMessageList);
                             });
