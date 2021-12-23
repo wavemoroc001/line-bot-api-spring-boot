@@ -16,4 +16,5 @@ public class LineBotController {
         TextMessageContent message = e.getMessage();
         return new TextMessage(message.getText());
     }
+
 }
