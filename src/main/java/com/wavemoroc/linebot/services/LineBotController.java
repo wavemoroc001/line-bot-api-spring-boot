@@ -92,7 +92,7 @@ public class LineBotController {
 //                                    builder.append("------------------------------");
 //                                    textMessageList.add(new TextMessage(builder.toString()));
                                 }
-                                reply(replyToken, textMessageList);
+                                reply(replyToken, new TextMessage(builder.toString()));
                             });
                 }
                 break;
