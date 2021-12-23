@@ -29,7 +29,7 @@ public class LineBotController {
     private LineMessagingClient lineMessagingClient;
 
     @EventMapping
-    public void handleTextMessage(MessageEvent<TextMessageContent> event) {
+    public void handleTextMessages(MessageEvent<TextMessageContent> event) {
         log.info("event: " + event);
         TextMessageContent message = event.getMessage();
         handleTextContent(event.getReplyToken(), event, message);
@@ -43,7 +43,7 @@ public class LineBotController {
         log.info("Got text message from %s : %s", replyToken, text);
 
         switch (text) {
-            case "Profile": {
+            case "whoami": {
                 String userId = event.getSource().getUserId();
                 if (userId != null) {
                     lineMessagingClient.getProfile(userId)
@@ -66,7 +66,7 @@ public class LineBotController {
             }
             default:
                 log.info("Return echo message %s : %s", replyToken, text);
-                this.replyText(replyToken, text);
+                replyText(replyToken, text);
         }
 
     }
