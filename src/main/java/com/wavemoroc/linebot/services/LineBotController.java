@@ -12,10 +12,14 @@ import com.linecorp.bot.model.message.TextMessage;
 import com.linecorp.bot.model.response.BotApiResponse;
 import com.linecorp.bot.spring.boot.annotation.EventMapping;
 import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
+import com.wavemoroc.linebot.entities.Item;
+import com.wavemoroc.linebot.entities.ItemOrder;
+import com.wavemoroc.linebot.repositories.OrderRepository;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -27,6 +31,8 @@ public class LineBotController {
 
     @Autowired
     private LineMessagingClient lineMessagingClient;
+    @Autowired
+    private OrderRepository orderRepository;
 
     @EventMapping
     public void handleTextMessage(MessageEvent<TextMessageContent> event) {
@@ -64,10 +70,34 @@ public class LineBotController {
                 }
                 break;
             }
-            case "orders" : {
-              break;
+            case "orders": {
+                String userId = event.getSource().getUserId();
+                if (userId != null) {
+                    lineMessagingClient.getProfile(userId)
+                            .whenComplete((profile, throwable) -> {
+                                if (throwable != null) {
+                                    replyText(replyToken, throwable.getMessage());
+                                    return;
+                                }
+                                List<ItemOrder> itemOrderList = orderRepository.findByOwner(userId);
+                                List<Message> textMessageList = new ArrayList<>();
+                                StringBuilder builder = new StringBuilder();
+                                for(ItemOrder itemOrder : itemOrderList) {
+                                   builder.append("OrderID :" + itemOrder.getId());
+                                    builder.append("------------------------------");
+
+                                    for(Item item : itemOrder.getItemList()) {
+                                        builder.append(item.getName()+ "\t" +item.getPrice() );
+                                    }
+                                    builder.append("------------------------------");
+                                    textMessageList.add(new TextMessage(builder.toString()));
+                                }
+                                reply(replyToken, textMessageList);
+                            });
+                }
+                break;
             }
-             default:
+            default:
                 log.info("Return echo message %s : %s", replyToken, text);
                 replyText(replyToken, text);
         }
