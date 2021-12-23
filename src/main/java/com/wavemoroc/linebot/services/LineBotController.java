@@ -86,7 +86,6 @@ public class LineBotController {
 //                                    StringBuilder builder = new StringBuilder();
 //                                    builder.append("OrderID :" + itemOrder.getId());
 //                                    builder.append("------------------------------\n");
-                                    reply(replyToken, new TextMessage("OrderId : " + itemOrder.getId()));
 
                                     for (Item item : itemOrder.getItemList()) {
 //                                        builder.append(item.getName() + "\t" + item.getPrice() + "\n");
