@@ -81,16 +81,19 @@ public class LineBotController {
                                 }
                                 List<ItemOrder> itemOrderList = orderRepository.findByOwner(userId);
                                 List<Message> textMessageList = new ArrayList<>();
-                                StringBuilder builder = new StringBuilder();
-                                for(ItemOrder itemOrder : itemOrderList) {
-                                   builder.append("OrderID :" + itemOrder.getId()+ "\n");
+
+                                for (ItemOrder itemOrder : itemOrderList) {
+                                    StringBuilder builder = new StringBuilder();
+                                    builder.append("OrderID :" + itemOrder.getId() + "\n");
                                     builder.append("------------------------------\n");
 
-                                    for(Item item : itemOrder.getItemList()) {
-                                        builder.append(item.getName()+ "\t" +item.getPrice() +"\n" );
+                                    for (Item item : itemOrder.getItemList()) {
+                                        builder.append(item.getName() + "\t" + item.getPrice() + "\n");
                                     }
-                                    reply(replyToken, new TextMessage(builder.toString()));
+                                    textMessageList.add(new TextMessage(builder.toString()));
                                 }
+                                reply(replyToken, new TextMessage("Size : "+textMessageList.size()));
+                                reply(replyToken, textMessageList);
                             });
                 }
                 break;
