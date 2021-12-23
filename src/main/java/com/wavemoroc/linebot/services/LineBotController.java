@@ -70,7 +70,7 @@ public class LineBotController {
                 }
                 break;
             }
-            case "orders": {
+            case "order": {
                 String userId = event.getSource().getUserId();
                 if (userId != null) {
                     lineMessagingClient.getProfile(userId)
@@ -84,13 +84,13 @@ public class LineBotController {
                                 StringBuilder builder = new StringBuilder();
                                 for(ItemOrder itemOrder : itemOrderList) {
                                    builder.append("OrderID :" + itemOrder.getId());
-                                    builder.append("------------------------------");
-
-                                    for(Item item : itemOrder.getItemList()) {
-                                        builder.append(item.getName()+ "\t" +item.getPrice() );
-                                    }
-                                    builder.append("------------------------------");
-                                    textMessageList.add(new TextMessage(builder.toString()));
+//                                    builder.append("------------------------------");
+//
+//                                    for(Item item : itemOrder.getItemList()) {
+//                                        builder.append(item.getName()+ "\t" +item.getPrice() );
+//                                    }
+//                                    builder.append("------------------------------");
+//                                    textMessageList.add(new TextMessage(builder.toString()));
                                 }
                                 reply(replyToken, textMessageList);
                             });
