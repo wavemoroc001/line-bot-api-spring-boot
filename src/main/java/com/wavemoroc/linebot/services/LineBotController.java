@@ -1,4 +1,4 @@
-package com.wavemoroc.linebot;
+package com.wavemoroc.linebot.services;
 
 import com.linecorp.bot.client.LineMessagingClient;
 import com.linecorp.bot.model.ReplyMessage;
@@ -29,7 +29,7 @@ public class LineBotController {
     private LineMessagingClient lineMessagingClient;
 
     @EventMapping
-    public void handleTextMessages(MessageEvent<TextMessageContent> event) {
+    public void handleTextMessage(MessageEvent<TextMessageContent> event) {
         log.info("event: " + event);
         TextMessageContent message = event.getMessage();
         handleTextContent(event.getReplyToken(), event, message);
@@ -52,7 +52,7 @@ public class LineBotController {
                                     replyText(replyToken, throwable.getMessage());
                                     return;
                                 }
-                                this.reply(replyToken, Arrays.asList(
+                                reply(replyToken, Arrays.asList(
                                         new TextMessage("Display name: " +
                                                 profile.getDisplayName()),
                                         new TextMessage("Status message: " +
@@ -64,7 +64,10 @@ public class LineBotController {
                 }
                 break;
             }
-            default:
+            case "orders" : {
+              break;
+            }
+             default:
                 log.info("Return echo message %s : %s", replyToken, text);
                 replyText(replyToken, text);
         }
