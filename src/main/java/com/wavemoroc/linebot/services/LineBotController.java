@@ -84,13 +84,12 @@ public class LineBotController {
                                 StringBuilder builder = new StringBuilder();
                                 for(ItemOrder itemOrder : itemOrderList) {
                                    builder.append("OrderID :" + itemOrder.getId()+ "\n");
-//                                    builder.append("------------------------------\n");
-//
-//                                    for(Item item : itemOrder.getItemList()) {
-//                                        builder.append(item.getName()+ "\t" +item.getPrice() +"\n" );
-//                                    }
-                                    reply(replyToken, new TextMessage(builder.toString()));
+                                    builder.append("------------------------------\n");
 
+                                    for(Item item : itemOrder.getItemList()) {
+                                        builder.append(item.getName()+ "\t" +item.getPrice() +"\n" );
+                                    }
+                                    reply(replyToken, new TextMessage(builder.toString()));
                                 }
                             });
                 }
