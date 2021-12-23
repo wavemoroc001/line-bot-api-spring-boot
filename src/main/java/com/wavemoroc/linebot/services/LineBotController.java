@@ -83,17 +83,20 @@ public class LineBotController {
                                 List<Message> textMessageList = new ArrayList<>();
 
                                 for (ItemOrder itemOrder : itemOrderList) {
-                                    StringBuilder builder = new StringBuilder();
-                                    builder.append("OrderID :" + itemOrder.getId() + "\n");
-                                    builder.append("------------------------------\n");
+//                                    StringBuilder builder = new StringBuilder();
+//                                    builder.append("OrderID :" + itemOrder.getId());
+//                                    builder.append("------------------------------\n");
+                                    reply(replyToken, new TextMessage("OrderId : " + itemOrder.getId()));
 
                                     for (Item item : itemOrder.getItemList()) {
-                                        builder.append(item.getName() + "\t" + item.getPrice() + "\n");
+//                                        builder.append(item.getName() + "\t" + item.getPrice() + "\n");
+                                        reply(replyToken, new TextMessage(item.getName() + "\t" + item.getPrice()));
+
                                     }
-                                    textMessageList.add(new TextMessage(builder.toString()));
+//                                    textMessageList.add(new TextMessage(builder.toString()));
                                 }
-                                reply(replyToken, new TextMessage("Size : "+textMessageList.size()));
-                                reply(replyToken, textMessageList);
+//                                reply(replyToken, new TextMessage("Size : "+textMessageList.size()));
+//                                reply(replyToken, textMessageList);
                             });
                 }
                 break;
