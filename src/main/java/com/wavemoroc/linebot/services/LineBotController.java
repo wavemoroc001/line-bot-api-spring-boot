@@ -83,16 +83,15 @@ public class LineBotController {
                                 List<Message> textMessageList = new ArrayList<>();
                                 StringBuilder builder = new StringBuilder();
                                 for(ItemOrder itemOrder : itemOrderList) {
-                                   builder.append("OrderID :" + itemOrder.getId());
-//                                    builder.append("------------------------------");
-//
-//                                    for(Item item : itemOrder.getItemList()) {
-//                                        builder.append(item.getName()+ "\t" +item.getPrice() );
-//                                    }
-//                                    builder.append("------------------------------");
-//                                    textMessageList.add(new TextMessage(builder.toString()));
+                                   builder.append("OrderID :" + itemOrder.getId()+ "\n");
+                                    builder.append("------------------------------\n");
+
+                                    for(Item item : itemOrder.getItemList()) {
+                                        builder.append(item.getName()+ "\t" +item.getPrice() +"\n" );
+                                    }
+                                    reply(replyToken, new TextMessage(builder.toString()));
+
                                 }
-                                reply(replyToken, new TextMessage(builder.toString()));
                             });
                 }
                 break;
