@@ -15,6 +15,7 @@ import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 import com.wavemoroc.linebot.entities.Item;
 import com.wavemoroc.linebot.entities.ItemOrder;
 import com.wavemoroc.linebot.repositories.OrderRepository;
+import io.sentry.Sentry;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,11 @@ public class LineBotController {
     @EventMapping
     public void handleTextMessage(MessageEvent<TextMessageContent> event) {
         log.info("event: " + event);
+        try {
+            throw new Exception("This is a test.");
+        } catch (Exception e) {
+            Sentry.captureException(e);
+        }
         TextMessageContent message = event.getMessage();
         handleTextContent(event.getReplyToken(), event, message);
     }
