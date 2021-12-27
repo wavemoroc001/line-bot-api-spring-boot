@@ -90,14 +90,16 @@ public class LineBotController {
                                 for (ItemOrder itemOrder : itemOrderList) {
                                     StringBuilder builder = new StringBuilder();
                                     builder.append("OrderID :" + itemOrder.getId());
-                                    builder.append("------------------------------\n");
+                                    builder.append("\n------------------------------\n");
 
                                     for (Item item : itemOrder.getItemList()) {
                                         builder.append(item.getName() + "\t" + item.getPrice() + "\n");
-
                                     }
-                                    reply(replyToken, new TextMessage(builder.toString()));
+                                    builder.append(itemOrder.getOwner());
+                                    textMessageList.add(new TextMessage(builder.toString()));
                                 }
+                                reply(replyToken, textMessageList);
+
                             });
                 }
                 break;
