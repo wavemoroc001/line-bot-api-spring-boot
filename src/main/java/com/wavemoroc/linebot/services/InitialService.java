@@ -49,11 +49,16 @@ public class InitialService {
         // test
         List<ItemOrder> getOrderList  = orderRepository.findByOwner("Ua529dd4a42816ca89f3efe1127b3df92");
         for (ItemOrder itemOrder : getOrderList) {
+            StringBuilder builder = new StringBuilder();
+            builder.append("\nOrderID :" + itemOrder.getId());
+            builder.append("\n------------------------------\n");
+
             for (Item item : itemOrder.getItemList()) {
-                log.error(item.getName());
-                log.error(item.getPrice().toString());
+                builder.append(item.getName() + "\t" + item.getPrice() + "\n");
+//                log.error(item.getName());
+//                log.error(item.getPrice().toString());
             }
-            log.error(itemOrder.getOwner());
+            log.error(builder.toString());
         }
     }
 }
