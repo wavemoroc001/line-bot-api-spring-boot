@@ -7,6 +7,7 @@ import com.wavemoroc.linebot.repositories.OrderRepository;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +21,8 @@ public class InitialService {
 
     @Bean
     CommandLineRunner runner (OrderRepository orderRepository,
-                              ItemRepository itemRepository) {
+                              ItemRepository itemRepository,
+                              RestTemplateBuilder restTemplateBuilder) {
         return args -> {
             List<Item> itemList = new ArrayList<>();
             List<Item> itemList1 = new ArrayList<>();
@@ -40,6 +42,7 @@ public class InitialService {
 
             orderRepository.saveAll(itemOrderList);
             testDB(orderRepository);
+
 
         };
     }
