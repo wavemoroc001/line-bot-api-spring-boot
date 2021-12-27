@@ -38,11 +38,11 @@ public class LineBotController {
     @EventMapping
     public void handleTextMessage(MessageEvent<TextMessageContent> event) {
         log.info("event: " + event);
-        try {
-            throw new Exception("This is a test.");
-        } catch (Exception e) {
-            Sentry.captureException(e);
-        }
+//        try {
+//            throw new Exception("This is a test.");
+//        } catch (Exception e) {
+//            Sentry.captureException(e);
+//        }
         TextMessageContent message = event.getMessage();
         handleTextContent(event.getReplyToken(), event, message);
     }
