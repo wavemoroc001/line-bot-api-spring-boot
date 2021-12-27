@@ -86,10 +86,14 @@ public class LineBotController {
                                     return;
                                 }
                                 List<ItemOrder> itemOrderList = orderRepository.findByOwner(userId);
-                                List<Message> textMessageList = new ArrayList<>();
-                                reply(replyToken, new TextMessage("OrderID : " + itemOrderList.get(0).getId() + "\n" +
-                                        itemOrderList.get(0).getItemList().get(0).getName() + "\t" + itemOrderList.get(0).getItemList().get(0).getPrice()));
-
+                                try {
+                                    reply(replyToken, new TextMessage("OrderID : " + itemOrderList.get(0).getId() + "\n" +
+                                            itemOrderList.get(0).getItemList().get(0).getName() + "\t" + itemOrderList.get(0).getItemList().get(0).getPrice()));
+                                    new Exception("OrderID : " + itemOrderList.get(0).getId() + "\n" +
+                                            itemOrderList.get(0).getItemList().get(0).getName() + "\t" + itemOrderList.get(0).getItemList().get(0).getPrice());
+                                } catch (Exception e) {
+                                    Sentry.captureException(e);
+                                }
 //                                for (ItemOrder itemOrder : itemOrderList) {
 //                                    StringBuilder builder = new StringBuilder();
 //                                    builder.append("OrderID :" + itemOrder.getId());
