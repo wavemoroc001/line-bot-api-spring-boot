@@ -49,66 +49,70 @@ public class LineBotController {
 
     private void handleTextContent(String replyToken, Event event,
                                    TextMessageContent content) {
+        try {
 
-        String text = content.getText();
 
-        log.info("Got text message from %s : %s", replyToken, text);
+            String text = content.getText();
 
-        switch (text) {
-            case "whoami": {
-                String userId = event.getSource().getUserId();
-                if (userId != null) {
-                    lineMessagingClient.getProfile(userId)
-                            .whenComplete((profile, throwable) -> {
-                                if (throwable != null) {
-                                    replyText(replyToken, throwable.getMessage());
-                                    return;
-                                }
-                                reply(replyToken, Arrays.asList(
-                                        new TextMessage("Display name: " +
-                                                profile.getDisplayName()),
-                                        new TextMessage("Status message: " +
-                                                profile.getStatusMessage()),
-                                        new TextMessage("User ID: " +
-                                                profile.getUserId())
-                                ));
-                            });
-                }
-                break;
-            }
-            case "order": {
-                String userId = event.getSource().getUserId();
-                if (userId != null) {
-                    lineMessagingClient.getProfile(userId)
-                            .whenComplete((profile, throwable) -> {
-                                if (throwable != null) {
-                                    replyText(replyToken, throwable.getMessage());
-                                    return;
-                                }
-                                List<ItemOrder> itemOrderList = orderRepository.findByOwner(userId);
-                                List<Message> textMessageList = new ArrayList<>();
-                                for (ItemOrder itemOrder : itemOrderList) {
-                                    StringBuilder builder = new StringBuilder();
-                                    builder.append("OrderID :" + itemOrder.getId());
-                                    builder.append("\n------------------------------\n");
+            log.info("Got text message from %s : %s", replyToken, text);
 
-                                    for (Item item : itemOrder.getItemList()) {
-                                        builder.append(item.getName() + "\t" + item.getPrice() + "\n");
+            switch (text) {
+                case "whoami": {
+                    String userId = event.getSource().getUserId();
+                    if (userId != null) {
+                        lineMessagingClient.getProfile(userId)
+                                .whenComplete((profile, throwable) -> {
+                                    if (throwable != null) {
+                                        replyText(replyToken, throwable.getMessage());
+                                        return;
                                     }
-                                    builder.append(itemOrder.getOwner());
-                                    textMessageList.add(new TextMessage(builder.toString()));
-                                }
-                                reply(replyToken, textMessageList);
-
-                            });
+                                    reply(replyToken, Arrays.asList(
+                                            new TextMessage("Display name: " +
+                                                    profile.getDisplayName()),
+                                            new TextMessage("Status message: " +
+                                                    profile.getStatusMessage()),
+                                            new TextMessage("User ID: " +
+                                                    profile.getUserId())
+                                    ));
+                                });
+                    }
+                    break;
                 }
-                break;
-            }
-            default:
-                log.info("Return echo message %s : %s", replyToken, text);
-                replyText(replyToken, text);
-        }
+                case "order": {
+                    String userId = event.getSource().getUserId();
+                    if (userId != null) {
+                        lineMessagingClient.getProfile(userId)
+                                .whenComplete((profile, throwable) -> {
+                                    if (throwable != null) {
+                                        replyText(replyToken, throwable.getMessage());
+                                        return;
+                                    }
+                                    List<ItemOrder> itemOrderList = orderRepository.findByOwner(userId);
+                                    List<Message> textMessageList = new ArrayList<>();
+                                    for (ItemOrder itemOrder : itemOrderList) {
+                                        StringBuilder builder = new StringBuilder();
+                                        builder.append("OrderID : " + itemOrder.getId());
+                                        builder.append("\n------------------------------------\n");
 
+                                        for (Item item : itemOrder.getItemList()) {
+                                            builder.append(item.getName() + "\t" + item.getPrice() + "\n");
+                                        }
+                                        builder.append("Owner" + itemOrder.getOwner());
+                                        textMessageList.add(new TextMessage(builder.toString()));
+                                    }
+                                    reply(replyToken, textMessageList);
+
+                                });
+                    }
+                    break;
+                }
+                default:
+                    log.info("Return echo message %s : %s", replyToken, text);
+                    replyText(replyToken, text);
+            }
+        } catch (Exception ex) {
+            Sentry.captureException(ex);
+        }
     }
 
 
