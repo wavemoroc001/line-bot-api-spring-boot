@@ -97,7 +97,7 @@ public class LineBotController {
                                         for (Item item : itemOrder.getItemList()) {
                                             builder.append(item.getName() + "\t" + item.getPrice() + "\n");
                                         }
-                                        builder.append("Owner" + itemOrder.getOwner());
+                                        builder.append("Owner : " + itemOrder.getOwner());
                                         textMessageList.add(new TextMessage(builder.toString()));
                                     }
                                     reply(replyToken, textMessageList);
