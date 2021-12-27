@@ -4,14 +4,18 @@ import com.wavemoroc.linebot.entities.Item;
 import com.wavemoroc.linebot.entities.ItemOrder;
 import com.wavemoroc.linebot.repositories.ItemRepository;
 import com.wavemoroc.linebot.repositories.OrderRepository;
+import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
+@Slf4j
 public class InitialService {
 
     @Bean
@@ -35,6 +39,21 @@ public class InitialService {
             itemOrderList.add(new ItemOrder(itemList1,"Ua529dd4a42816ca89f3efe1127b3df92"));
 
             orderRepository.saveAll(itemOrderList);
+            testDB(orderRepository);
+
         };
+    }
+
+    @Transactional
+    void testDB(@NonNull OrderRepository orderRepository) {
+        // test
+        List<ItemOrder> getOrderList  = orderRepository.findByOwner("Ua529dd4a42816ca89f3efe1127b3df92");
+        for (ItemOrder itemOrder : getOrderList) {
+            for (Item item : itemOrder.getItemList()) {
+                log.error(item.getName());
+                log.error(item.getPrice().toString());
+            }
+            log.error(itemOrder.getOwner());
+        }
     }
 }

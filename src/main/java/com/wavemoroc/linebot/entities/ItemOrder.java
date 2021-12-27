@@ -18,7 +18,7 @@ public class ItemOrder {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private List<Item> itemList;
     private String owner;
 
