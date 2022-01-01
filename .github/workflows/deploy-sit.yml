@@ -1,0 +1,112 @@
+name: deploy-sit
+
+on:
+  push:
+    branches:
+      - 'sit'
+jobs:
+
+#  started-notify:
+#    runs-on: ubuntu-20.04
+#    steps:
+#      - name: Discord notification
+#        env:
+#          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+#        uses: Ilshidur/action-discord@master
+#        with:
+#          args: 'suesi-api is deploying'
+
+#  build:
+#    runs-on: ubuntu-20.04
+#    needs:
+#      - started-notify
+#    steps:
+#      - name: Git CheckOut
+#        uses: actions/checkout@v2
+#      - name: Login ACR
+#        uses: docker/login-action@v1
+#        with:
+#          registry: asia.gcr.io-docker.pkg.dev
+#          username: ${{ secrets.AZURE_CLIENT_ID }}
+#          password: ${{ secrets.AZURE_CLIENT_SECRET }}
+#
+#      - name: Build and push
+#        uses: docker/build-push-action@v2
+#        with:
+#          push: true
+#          tags: ${{secrets.APP_REGISTRY}}/suesi-api:sit
+
+  executing-ssh-commands:
+#    needs:
+#      - build
+    #      - database-healthcheck
+    runs-on: ubuntu-20.04
+    steps:
+      - name: executing remote ssh commands using ssh key
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOSTNAME }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            cd ./deploy/line-notify
+            rm -rf src
+            git clone git@github.com:wavemoroc001/line-bot-api-spring-boot.git src
+            cd ./src
+            git checkout sit
+            cd ..
+            docker-compose --env-file ./.config/.env.sit down
+            docker image prune -af
+            docker-compose --env-file ./.config/.env.sit up --build -d 
+
+  health-check:
+    needs:
+      - executing-ssh-commands
+    runs-on: ubuntu-20.04
+    steps:
+      - name: health-check
+        run: sleep 10 && curl https://notify.wavemoroc.app/api/v1/line/health -I | grep "200"
+
+#  completed-notify-success:
+#    needs:
+#      - health-check
+#    runs-on: ubuntu-20.04
+#    if: success()
+#    steps:
+#      - name: Discord notification
+#        uses: sarisia/actions-status-discord@v1
+#        with:
+#          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+#          title: "Deploy Success"
+#          image: "https://www.tarkom-projects.com/api/v1/image/hell-yeah.webp"
+
+#  failure-notify-failure:
+#    needs:
+#      - health-check
+#    runs-on: ubuntu-20.04
+#    if: failure()
+#    steps:
+#      - name: Discord notification
+#        uses: sarisia/actions-status-discord@v1
+#        with:
+#          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+#          image: "https://www.tarkom-projects.com/api/v1/image/fuck-up.webp"
+#          title: "Deploy Failure"
+#          color: "0xFF0040"
+#          status: Failure
+
+#  canclled-notify-canclled:
+#    needs:
+#      - health-check
+#    runs-on: ubuntu-20.04
+#    if: cancelled()
+#    steps:
+#      - name: Discord notification
+#        uses: sarisia/actions-status-discord@v1
+#        with:
+#          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+#          image: "https://www.tarkom-projects.com/api/v1/image/thinking.webp"
+#          title: "Deploy Was Cancelled"
+#          color: "#ffc40c"
+#          status: Cancelled
