@@ -19,6 +19,10 @@ import io.sentry.Sentry;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,12 +32,19 @@ import java.util.concurrent.ExecutionException;
 
 @LineMessageHandler
 @Slf4j
+@RestController
+@RequestMapping("api/v1/line")
 public class LineBotController {
 
     @Autowired
     private LineMessagingClient lineMessagingClient;
     @Autowired
     private OrderRepository orderRepository;
+
+    @GetMapping()
+    public ResponseEntity<?> healthCheck() {
+        return ResponseEntity.ok().body("line bot service is running");
+    }
 
     @EventMapping
     public void handleTextMessage(MessageEvent<TextMessageContent> event) {
