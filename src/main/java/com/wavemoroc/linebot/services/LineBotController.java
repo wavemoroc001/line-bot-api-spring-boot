@@ -41,7 +41,7 @@ public class LineBotController {
     @Autowired
     private OrderRepository orderRepository;
 
-    @GetMapping()
+    @GetMapping("health")
     public ResponseEntity<?> healthCheck() {
         return ResponseEntity.ok().body("line bot service is running");
     }
