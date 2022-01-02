@@ -20,6 +20,7 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -49,14 +50,18 @@ public class LineBotController {
     @EventMapping
     public void handleTextMessage(MessageEvent<TextMessageContent> event) {
         log.info("event: " + event);
-//        try {
-//            throw new Exception("This is a test.");
-//        } catch (Exception e) {
-//            Sentry.captureException(e);
-//        }
         TextMessageContent message = event.getMessage();
         handleTextContent(event.getReplyToken(), event, message);
     }
+
+    @EventMapping
+    @Async
+    public void handleTextsMessage(List<MessageEvent<TextMessageContent>> eventList) {
+        for (MessageEvent event: eventList) {
+            handleTextMessage(event);
+        }
+    }
+
 
     private void handleTextContent(String replyToken, Event event,
                                    TextMessageContent content) {
