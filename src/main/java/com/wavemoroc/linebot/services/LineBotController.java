@@ -1,6 +1,7 @@
 package com.wavemoroc.linebot.services;
 
 import com.linecorp.bot.client.LineMessagingClient;
+import com.linecorp.bot.model.PushMessage;
 import com.linecorp.bot.model.ReplyMessage;
 import com.linecorp.bot.model.event.Event;
 import com.linecorp.bot.model.event.MessageEvent;
@@ -21,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -44,6 +46,12 @@ public class LineBotController {
     @GetMapping("health")
     public ResponseEntity<?> healthCheck() {
         return ResponseEntity.ok().body("line bot service is running");
+    }
+
+    @PostMapping("/pushMsg")
+    public ResponseEntity<?> pushMsg(String userId,String msg){
+        lineMessagingClient.pushMessage(new PushMessage(userId,new TextMessage(msg)));
+        return ResponseEntity.ok().build();
     }
 
     @EventMapping
